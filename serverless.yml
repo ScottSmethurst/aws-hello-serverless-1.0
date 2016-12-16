@@ -1,0 +1,24 @@
+service: 
+provider:
+  name: aws
+  runtime: nodejs4.3
+  region: eu-west-1
+  stage: ${opt:stage, self:custom.defaultStage}
+  profile: ${self:custom.profiles.${self:provider.stage}}
+# this is how we would configure prod / non-prod AWS accounts
+custom:
+  defaultStage: dev
+  profiles:
+    dev: default
+    prod: default
+functions:
+  # it would probably be better to split these out into separate files that sit alongside the functions
+  hello:
+    handler: restApi/hello/get/handler.hello
+    events:
+      - http:
+          path: /hello
+          method: get
+    environment:
+      FIRST_NAME: Scott
+    memorySize: 128
